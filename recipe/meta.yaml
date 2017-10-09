@@ -1,4 +1,4 @@
-{% set version = "9.6.3" %}
+{% set version = "9.6.5" %}
 {% set libpqver = "5.9" %}
 
 package:
@@ -8,8 +8,7 @@ package:
 build:
   number: 0
   features:
-    - vc9               # [win and py27]
-    - vc14              # [win and py >= 35]
+    - vc{{ vc }}     # [win]
   always_include_files:
     - lib/libpq.so.{{ libpqver }}        # [linux]
     - lib/libpq.so.5                     # [linux]
@@ -20,18 +19,20 @@ build:
     - bin/pg_config                      # [unix]
     - Library/bin/libpq.dll              # [win]
     - Library/bin/pg_config.exe          # [win]
+  ignore_run_exports:
+    - libpq
 
 requirements:
-  build:
-    - python   # [win]
-    - vc   9   # [win and py27]
-    - vc  14   # [win and py >= 35]
+  host:
+    # to activate the appropriate feature
+    - vc {{ vc }}     # [win]
     - postgresql  {{ version }}
-  run:
-    - vc   9   # [win and py27]
-    - vc  14   # [win and py >= 35]
-    - openssl 1.0.*
+    - openssl
     - krb5     # [not osx]
+  run:
+    # to activate the appropriate feature
+    - vc {{ vc }}     # [win]
+
 
 test:
   commands:
